@@ -37,13 +37,22 @@ const ShoeCard = ({
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
         </ImageWrapper>
+        {variant === 'on-sale' ? 
+          <OnSaleFlag>Sale</OnSaleFlag> 
+          : variant === 'new-release' ?
+          <NewReleaseFlag>Just released!</NewReleaseFlag>
+          : undefined
+        }
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price>{formatPrice(price)}</Price>
+          <Price onSale={variant === 'on-sale'}>
+            {formatPrice(price)}
+          </Price>
         </Row>
         <Row>
           <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          {variant === 'on-sale' && <SalePrice>{formatPrice(salePrice)}</SalePrice>}
         </Row>
       </Wrapper>
     </Link>
@@ -55,7 +64,9 @@ const Link = styled.a`
   color: inherit;
 `;
 
-const Wrapper = styled.article``;
+const Wrapper = styled.article`
+  position: relative;
+`;
 
 const ImageWrapper = styled.div`
   position: relative;
@@ -67,6 +78,8 @@ const Image = styled.img`
 
 const Row = styled.div`
   font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Name = styled.h3`
@@ -74,7 +87,10 @@ const Name = styled.h3`
   color: ${COLORS.gray[900]};
 `;
 
-const Price = styled.span``;
+const Price = styled.span`
+  color: ${p => p.onSale ? COLORS.gray[700] : undefined};
+  text-decoration: ${p => p.onSale ? 'line-through' : undefined};
+`;
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
@@ -83,6 +99,27 @@ const ColorInfo = styled.p`
 const SalePrice = styled.span`
   font-weight: ${WEIGHTS.medium};
   color: ${COLORS.primary};
+`;
+
+const FlagBase = styled.div`
+  position: absolute;
+  top: 12px;
+  right: -4px;
+  color: ${COLORS.white};
+  font-size: 0.875rem;
+  font-weight: 700;
+  height: 32px;
+  line-height: 32px;
+  padding: 0 10px;
+  border-radius: 2px;
+`;
+
+const OnSaleFlag = styled(FlagBase)`
+  background-color: ${COLORS.primary};
+`;
+
+const NewReleaseFlag = styled(FlagBase)`
+  background-color: ${COLORS.secondary};
 `;
 
 export default ShoeCard;
